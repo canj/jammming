@@ -1,9 +1,7 @@
-
 const clientId = '428a7cd469dd433b8f1661282534045f';
 const accessURIBase = 'https://accounts.spotify.com/authorize';
 const spotifyURIBase = 'https://api.spotify.com/v1/';
-const redirectURI = 'http://localhost:3000/';
-// const redirectURI = 'mcjammming.surge.sh';
+const redirectURI = 'http://mcjammming.surge.sh';
 let accessToken;
 
 const Spotify = {
