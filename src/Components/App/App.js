@@ -1,25 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
+import Spotify from '../../util/Spotify';
 
 class App extends Component {
   constructor(props) {
     super(props);
-  this.state = {
-      searchResults: [
-        name: 'Thundershock',
-        artist: 'Pikachu',
-        album: 'Life in the dark'
-      ],
-      playlistName: 'Matts Playlist',
-      playlistTracks: [
-        name: 'Thundershock',
-        artist: 'Pikachu',
-        album: 'Life in the dark'
-      ]
+    this.state = {
+      searchResults: [],
+      playlistName: 'New Playlist',
+      playlistTracks: []
     };
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
@@ -49,14 +41,24 @@ class App extends Component {
   }
 
   savePlaylist() {
-    const trackURIs = this.state.playlistTracks.map(playlistTrack => {
+    const trackUris = this.state.playlistTracks.map(playlistTrack => {
       return playlistTrack.uri;
+    });
+    Spotify.savePlaylist(this.state.playlistName, trackUris)
+      .then(this.setState(
+        {
+          playlistName: 'New Playlist',
+          searchResults: [],
+          playlistTracks: []
+        }
+      ))
+    }
+
+  search(term) {
+    console.log(`App.js search term ${term}`)
+    Spotify.search(term).then(tracks => {
+      this.setState({ searchResults: tracks})
     })
-
-  }
-
-  search(searchTerm) {
-    console.log(`App.js search term ${searchTerm}`)
   }
 
   render() {
@@ -66,7 +68,7 @@ class App extends Component {
         <div className="App">
         <SearchBar onSearch={this.search}/>
         <div className="App-playlist">
-        <SearchResults searchResults={this.state.searchResults} />
+        <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack}/>
         <Playlist
           playlistName={this.state.playlistName}
           playlistTracks={this.state.playlistTracks}
