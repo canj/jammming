@@ -1,3 +1,4 @@
+
 const clientId = '428a7cd469dd433b8f1661282534045f';
 const accessURIBase = 'https://accounts.spotify.com/authorize';
 const spotifyURIBase = 'https://api.spotify.com/v1/';
@@ -51,7 +52,7 @@ const Spotify = {
     });
   },
 
-  savePlaylist(name, trackUris) {
+ savePlaylist(name, trackUris) {
     if (!name || !trackUris.length) {
       return;
     }
@@ -60,25 +61,24 @@ const Spotify = {
     const headers = { Authorization: `Bearer ${accessToken}` };
     let userId;
 
-    return fetch(`${spotifyURIBase}me`, {headers: headers}
+    return fetch('https://api.spotify.com/v1/me', {headers: headers}
     ).then(response => response.json()
     ).then(jsonResponse => {
       userId = jsonResponse.id;
-      return fetch(`${spotifyURIBase}users/${userId}/playlists`, {
+      return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
         headers: headers,
         method: 'POST',
         body: JSON.stringify({name: name})
       }).then(response => response.json()
       ).then(jsonResponse => {
         const playlistId = jsonResponse.id;
-        return
-        fetch(`${spotifyURIBase}users/${userId}/playlists/${playlistId}/tracks`, {
+        return fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
           headers: headers,
           method: 'POST',
           body: JSON.stringify({uris: trackUris})
+        });
       });
     });
-  });
-}
+  }
 }
 export default Spotify;
